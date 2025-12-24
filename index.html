@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Labs | Evidence Automation & Compliance Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .hero-gradient { background: radial-gradient(circle at 50% 50%, #111827 0%, #000000 100%); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="border-b border-gray-200 bg-white sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-black flex items-center justify-center rounded">
+                    <i class="fas fa-microscope text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight italic">AUDIT<span class="text-blue-600">LABS</span></span>
+            </div>
+            <div class="space-x-8 mono text-sm font-medium">
+                <a href="#automation" class="hover:text-blue-600">Automation</a>
+                <a href="#frameworks" class="hover:text-blue-600">Frameworks</a>
+                <a href="https://github.com/audit-labs" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-gradient text-white py-24 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                Automate the <span class="text-blue-500">Evidence Trail.</span>
+            </h1>
+            <p class="text-xl text-gray-400 mb-10 leading-relaxed">
+                We build open-source tools, automation, and tutorials that help auditors and compliance teams programmatically gather evidence from complex environments.
+            </p>
+            <div class="inline-block bg-gray-900 rounded-lg p-1 border border-gray-700 shadow-2xl">
+                <div class="bg-black rounded-md px-6 py-3 mono text-left text-sm md:text-base border border-gray-800">
+                    <span class="text-green-500">$</span> audit-labs collect --framework SOX --target all<br>
+                    <span class="text-blue-400">Scanning connected systems...</span><br>
+                    <span class="text-gray-500">Evidence bundled in ./compliance_output/</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="frameworks" class="py-16 bg-white border-b">
+        <div class="max-w-6xl mx-auto px-6">
+            <p class="text-center text-sm font-bold uppercase tracking-widest text-gray-500 mb-8">Supporting Assessments For</p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-70 grayscale">
+                <span class="text-2xl font-black">SOX</span>
+                <span class="text-2xl font-black">SOC 1-3</span>
+                <span class="text-2xl font-black">ISO 27001</span>
+                <span class="text-2xl font-black">NIST</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="automation" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Evidence as Code</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">We replace manual screenshots and manual checks with automated scripts that interface directly with your technology stack.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-sm hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fab fa-aws text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Cloud Infrastructure</h3>
+                    <p class="text-gray-600 text-sm mb-4">Automated collection for AWS environments, ensuring access controls and configurations meet audit standards.</p>
+                </div>
+
+                <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-sm hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fab fa-git-alt text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Source Control</h3>
+                    <p class="text-gray-600 text-sm mb-4">Validation tools for GitHub and GitLab settings, branch protections, and developer access compliance.</p>
+                </div>
+
+                <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-sm hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-database text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Database Admin</h3>
+                    <p class="text-gray-600 text-sm mb-4">Scripts to audit database administrator accounts, password rotations, and privilege levels.</p>
+                </div>
+
+                <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-sm hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-red-50 text-red-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-hdd text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Mainframe (RACF)</h3>
+                    <p class="text-gray-600 text-sm mb-4">Custom automation for legacy environments including RACF access logs and system authority.</p>
+                </div>
+
+                <div class="bg-white p-8 border border-gray-200 rounded-xl shadow-sm hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-green-50 text-green-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-book text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">Tutorials & Docs</h3>
+                    <p class="text-gray-600 text-sm mb-4">Step-by-step guides on how to build your own audit automation using Python, CLI, and APIs.</p>
+                </div>
+
+                <div class="bg-gray-900 p-8 border border-gray-800 rounded-xl shadow-sm flex flex-col justify-center items-center text-center">
+                    <p class="text-white font-bold mb-2">Have a unique system?</p>
+                    <a href="https://github.com/audit-labs" class="text-blue-400 hover:underline text-sm">Request a Custom Tool →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t py-12 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="text-lg font-extrabold italic">AUDIT<span class="text-blue-600">LABS</span></span>
+                <p class="text-gray-500 text-xs mt-1">© 2025 Audit Labs. A two-person team building for the community.</p>
+            </div>
+            <div class="flex space-x-6 text-gray-400">
+                <a href="https://github.com/audit-labs" class="hover:text-black"><i class="fab fa-github text-2xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
