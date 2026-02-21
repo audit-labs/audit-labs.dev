@@ -106,7 +106,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image:
+            background-image: 
                 repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px),
                 repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px);
             pointer-events: none;
@@ -214,7 +214,7 @@
             align-items: center;
         }
 
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
         .dot-red { background: #ff5f57; }
         .dot-yellow { background: #febc2e; }
         .dot-green { background: #28c840; }
@@ -496,7 +496,7 @@
 
         .hero-label { animation: fadeUp 0.5s ease both; }
         h1 { animation: fadeUp 0.5s ease 0.1s both; }
-        .hero-desc { a[<35;7;2Mnimation: fadeUp 0.5s ease 0.2s both; }
+        .hero-desc { animation: fadeUp 0.5s ease 0.2s both; }
         .hero-actions { animation: fadeUp 0.5s ease 0.3s both; }
         .terminal { animation: fadeUp 0.5s ease 0.4s both; }
 
@@ -534,7 +534,7 @@
 
         <div class="terminal">
             <div class="terminal-bar">
-                <di[<35;7;3Mv class="dot dot-red"></div>
+                <div class="dot dot-red"></div>
                 <div class="dot dot-yellow"></div>
                 <div class="dot dot-green"></div>
             </div>
@@ -625,7 +625,7 @@
 </section>
 
 <section class="frameworks">
-    <div class[<35;7;4M[<35;8;4M="frameworks-inner">
+    <div class="frameworks-inner">
         <span class="frameworks-label">Used in assessments for</span>
         <div class="frameworks-list">
             <span class="framework-tag">SOX</span>
@@ -644,7 +644,7 @@
             <p>© 2025 Audit Labs — a two-person team building for the community.</p>
         </div>
         <div class="footer-links">
-            <a href="https://github.com/audit-la[<35;9;5Mbs/audit-tools">audit-tools</a>
+            <a href="https://github.com/audit-labs/audit-tools">audit-tools</a>
             <a href="https://github.com/audit-labs/tutorials">tutorials</a>
             <a href="https://github.com/audit-labs">GitHub</a>
         </div>
