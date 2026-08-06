@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gh-attest | Audit Labs</title>
+    <meta name="description" content="A read-only GitHub App that turns your security configuration into auditor-ready evidence — branch protection, scanning alerts, and org access recorded over time and mapped to SOC 2 and ISO 27001 controls.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">AUDIT<span>LABS</span></a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/audit-report/">audit-report</a></li>
+            <li><a href="https://github.com/audit-labs/gh-attest" class="btn-github">View on GitHub →</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="hero split">
+    <div class="hero-inner">
+        <div>
+            <div class="crumb"><a href="/">Audit Labs</a> / gh-attest</div>
+            <h1>Your GitHub settings,<br><em>as audit evidence.</em></h1>
+            <p class="hero-desc">
+                A read-only GitHub App that records branch protection, scanning alerts, and
+                organization access as they change &mdash; maps each signal to SOC&nbsp;2 and
+                ISO&nbsp;27001 controls, and exports point-in-time CSV and PDF evidence packages.
+                It never modifies your repositories, permissions, or membership.
+            </p>
+            <div class="hero-actions">
+                <a href="https://github.com/audit-labs/gh-attest" class="btn-primary">View on GitHub</a>
+                <a href="#collect" class="btn-secondary">What it collects</a>
+            </div>
+        </div>
+        <div class="terminal">
+            <div class="terminal-bar"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+            <div class="terminal-body">
+                <span class="t-comment"># Changes are recorded as they happen</span><br>
+                <span class="t-out">▸ branch protection enabled</span><span class="t-hash">&nbsp;&nbsp;repo/app · main</span><br>
+                <span class="t-path">&nbsp;&nbsp;&nbsp;→ SOC 2 CC8.1 · ISO 27001 A.8.32</span><br>
+                <span class="t-out">▸ secret scanning alert resolved</span><span class="t-hash">&nbsp;&nbsp;repo/api</span><br>
+                <span class="t-path">&nbsp;&nbsp;&nbsp;→ SOC 2 CC6.1, CC6.6 · ISO A.5.17</span><br>
+                <span class="t-dim">──────────────────────────────</span><br>
+                <span class="t-comment"># Export a point-in-time package</span><br>
+                <span class="t-out">✓ evidence package → </span><span class="t-path">acme_2026-08.csv + .pdf</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="section-inner">
+        <div class="eyebrow">How it works</div>
+        <h2>Capture, map, export.</h2>
+        <p class="lede">Evidence accrues on its own &mdash; you install the app once and pull a package whenever an auditor asks.</p>
+        <div class="guarantees">
+            <div class="card">
+                <div class="num">01 · CAPTURE</div>
+                <h3>As it changes</h3>
+                <p>Webhooks record branch protection, rulesets, and scanning alerts the moment they change. An hourly cron polls for state webhooks never announce &mdash; protection that predates install, and current membership &mdash; storing each as a timestamped snapshot.</p>
+            </div>
+            <div class="card">
+                <div class="num">02 · MAP</div>
+                <h3>To the controls</h3>
+                <p>Each signal is mapped to SOC&nbsp;2 and ISO&nbsp;27001 controls with a plain-language rationale. Mappings apply as a join at query time, so one can be corrected without re-ingesting history.</p>
+            </div>
+            <div class="card">
+                <div class="num">03 · EXPORT</div>
+                <h3>Auditor-ready</h3>
+                <p>Point-in-time CSV and PDF evidence packages, rendered off the request path via a queue. Every export reflects the exact state at the moment you asked &mdash; not just today&rsquo;s.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cmds" id="collect">
+    <div class="section-inner">
+        <div class="eyebrow">What it collects</div>
+        <h2>Signals, and the controls they evidence.</h2>
+        <p class="lede">Every mapping &mdash; and why each signal is defensible evidence for its control &mdash; is documented alongside the machine-readable version in the repo.</p>
+        <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-name">Branch protection</div><div class="cmd-desc">Protection rules and repository rulesets. <span class="mono">SOC 2 CC8.1 · ISO 27001 A.8.32</span></div></div>
+            <div class="cmd-row"><div class="cmd-name">Secret scanning</div><div class="cmd-desc">Secret scanning alerts and push protection. <span class="mono">SOC 2 CC6.1, CC6.6 · ISO A.5.17</span></div></div>
+            <div class="cmd-row"><div class="cmd-name">Dependabot</div><div class="cmd-desc">Dependency vulnerability alerts. <span class="mono">SOC 2 CC7.1, CC7.2 · ISO A.8.8</span></div></div>
+            <div class="cmd-row"><div class="cmd-name">Code scanning</div><div class="cmd-desc">Code scanning alerts from CodeQL and partners. <span class="mono">SOC 2 CC7.1 · ISO A.8.28, A.8.29</span></div></div>
+            <div class="cmd-row"><div class="cmd-name">Access</div><div class="cmd-desc">Organization and team membership over time. <span class="mono">SOC 2 CC6.2, CC6.3 · ISO A.5.18</span></div></div>
+            <div class="cmd-row"><div class="cmd-name">Inventory</div><div class="cmd-desc">Repository inventory and visibility. <span class="mono">ISO 27001 A.5.9</span></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="frameworks">
+    <div class="frameworks-inner">
+        <span class="frameworks-label">Maps GitHub signals to</span>
+        <div class="frameworks-list">
+            <span class="framework-tag">SOC 2</span>
+            <span class="framework-tag">ISO 27001</span>
+        </div>
+    </div>
+</section>
+
+<section class="install" id="start">
+    <div class="section-inner">
+        <div class="eyebrow">Get started</div>
+        <h2>Install once, evidence accrues.</h2>
+        <div class="install-grid">
+            <div>
+                <pre><span class="c"># 1. Install the GitHub App on your org</span>
+<span class="c">#    (read-only, least-privilege scopes)</span>
+<span class="c"># 2. Select the repositories to cover</span>
+<span class="c"># 3. Snapshots begin immediately</span>
+<span class="c"># 4. Export a package whenever you need one</span></pre>
+                <div class="badges">
+                    <span class="badge">TypeScript</span>
+                    <span class="badge">Cloudflare Workers</span>
+                    <span class="badge">D1</span>
+                    <span class="badge">R2</span>
+                    <span class="badge">GPL-3.0</span>
+                </div>
+            </div>
+            <div>
+                <p class="lede">Read-only, by design &mdash; what it never does:</p>
+                <div class="exit">
+                    <div class="e"><span class="code g">✓</span><span>Never modifies your repositories or their contents.</span></div>
+                    <div class="e"><span class="code g">✓</span><span>Never changes permissions, teams, or membership.</span></div>
+                    <div class="e"><span class="code g">✓</span><span>Requests the minimum read scopes to observe configuration.</span></div>
+                </div>
+                <p class="lede" style="margin-top:1.4rem; font-size:.9rem;">
+                    Prefer to run audits yourself?
+                    <a href="/audit-report/" style="color:var(--amber); text-decoration:none;">audit-report</a>
+                    turns offline evidence packages into the same control-mapped reports.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            <a href="/" class="footer-logo">AUDIT<span>LABS</span></a>
+            <p>© 2026 Audit Labs — a two-person team building for the community.</p>
+        </div>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/audit-report/">audit-report</a>
+            <a href="/evidence-seal/">evidence-seal</a>
+            <a href="https://github.com/audit-labs/gh-attest">gh-attest</a>
+            <a href="https://github.com/audit-labs">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
