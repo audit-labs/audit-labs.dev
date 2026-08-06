@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>evidence-seal | Audit Labs</title>
+    <meta name="description" content="Tamper-evident seals and chain of custody for audit evidence. SHA-256 Merkle manifests, seal chaining, optional ed25519 signing and RFC 3161 timestamping.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --black:#0a0a0a; --off-white:#f4f1eb; --warm-white:#faf8f4;
+            --amber:#d97706; --amber-light:#fbbf24; --green:#15803d;
+            --gray-1:#1c1c1c; --gray-2:#2e2e2e; --gray-3:#6b6b6b; --gray-4:#a3a3a3; --gray-5:#d4d4d4;
+            --border:#e5e1d8; --red:#c0392b;
+        }
+        body { font-family:'DM Sans',sans-serif; background:var(--warm-white); color:var(--black); line-height:1.6; }
+        .mono { font-family:'IBM Plex Mono',monospace; }
+
+        /* NAV */
+        nav { position:sticky; top:0; z-index:100; background:var(--warm-white); border-bottom:1px solid var(--border); padding:0 2rem; }
+        .nav-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; height:60px; }
+        .logo { font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:1.1rem; letter-spacing:-.02em; color:var(--black); text-decoration:none; }
+        .logo span { color:var(--amber); }
+        .nav-links { display:flex; gap:2rem; align-items:center; list-style:none; }
+        .nav-links a { font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--gray-3); text-decoration:none; transition:color .15s; }
+        .nav-links a:hover { color:var(--black); }
+        .nav-links .btn-github { background:var(--black); color:var(--off-white); padding:.45rem 1rem; border-radius:4px; font-size:.75rem; }
+        .nav-links .btn-github:hover { background:var(--gray-2); }
+
+        /* HERO */
+        .hero { background:var(--black); color:var(--off-white); padding:5.5rem 2rem 4.5rem; position:relative; overflow:hidden; }
+        .hero::before { content:''; position:absolute; inset:0; pointer-events:none;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.03) 39px, rgba(255,255,255,.03) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.03) 39px, rgba(255,255,255,.03) 40px); }
+        .hero-inner { max-width:1100px; margin:0 auto; position:relative; display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:center; }
+        @media (max-width:820px){ .hero-inner{ grid-template-columns:1fr; gap:2.5rem; } }
+        .crumb { font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--amber-light); margin-bottom:1.4rem; display:flex; align-items:center; gap:.5rem; }
+        .crumb::before { content:''; width:1.5rem; height:1px; background:var(--amber-light); }
+        .crumb a { color:var(--amber-light); text-decoration:none; opacity:.8; }
+        h1 { font-family:'DM Serif Display',serif; font-size:clamp(2.4rem,5vw,3.9rem); font-weight:400; line-height:1.08; letter-spacing:-.02em; margin-bottom:1.3rem; }
+        h1 em { font-style:italic; color:var(--amber-light); }
+        .hero-desc { font-size:1.02rem; color:#a09a8e; margin-bottom:2rem; line-height:1.75; max-width:34rem; }
+        .hero-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+        .btn-primary { background:var(--amber); color:#fff; text-decoration:none; padding:.75rem 1.5rem; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:.8rem; font-weight:500; transition:background .15s; }
+        .btn-primary:hover { background:var(--amber-light); color:#000; }
+        .btn-secondary { background:transparent; color:var(--gray-4); text-decoration:none; padding:.75rem 1.5rem; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:.8rem; border:1px solid var(--gray-2); transition:border-color .15s,color .15s; }
+        .btn-secondary:hover { border-color:var(--gray-4); color:var(--off-white); }
+
+        /* TERMINAL */
+        .terminal { background:#111; border:1px solid #2a2a2a; border-radius:8px; overflow:hidden; }
+        .terminal-bar { background:#1a1a1a; border-bottom:1px solid #2a2a2a; padding:.6rem 1rem; display:flex; gap:.4rem; align-items:center; }
+        .dot { width:10px; height:10px; border-radius:50%; }
+        .dot-red{background:#ff5f57;} .dot-yellow{background:#febc2e;} .dot-green{background:#28c840;}
+        .terminal-body { padding:1.2rem 1.4rem; font-family:'IBM Plex Mono',monospace; font-size:.78rem; line-height:1.95; }
+        .t-prompt{color:#5a9060;} .t-cmd{color:#e8e0d0;} .t-comment{color:#555;} .t-out{color:#7a9f7a;} .t-path{color:#d4a862;} .t-dim{color:#444;} .t-bad{color:#e06c5e;} .t-hash{color:#8a8a8a;}
+
+        /* SECTIONS */
+        section { padding:5rem 2rem; border-bottom:1px solid var(--border); }
+        .section-inner { max-width:1100px; margin:0 auto; }
+        .eyebrow { font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-bottom:.9rem; }
+        h2 { font-family:'DM Serif Display',serif; font-size:clamp(1.7rem,3vw,2.3rem); font-weight:400; line-height:1.2; margin-bottom:.6rem; }
+        .lede { color:var(--gray-3); font-size:1rem; max-width:44rem; line-height:1.7; }
+
+        .guarantees { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-top:2.6rem; }
+        .card { background:#fff; border:1px solid var(--border); border-radius:8px; padding:1.8rem; transition:border-color .15s,box-shadow .15s; }
+        .card:hover { border-color:var(--amber); box-shadow:0 4px 20px rgba(0,0,0,.06); }
+        .card .num { font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--amber); letter-spacing:.1em; }
+        .card h3 { font-family:'DM Serif Display',serif; font-weight:400; font-size:1.3rem; margin:.5rem 0 .6rem; }
+        .card p { font-size:.9rem; color:var(--gray-3); line-height:1.65; }
+        .card p .mono { color:var(--gray-1); }
+
+        /* COMMANDS */
+        .cmds { background:#fff; }
+        .cmd-list { margin-top:2.4rem; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+        .cmd-row { display:grid; grid-template-columns:9rem 1fr; gap:1.5rem; padding:1.15rem 1.5rem; border-bottom:1px solid var(--border); align-items:baseline; }
+        .cmd-row:last-child { border-bottom:none; }
+        .cmd-row:hover { background:var(--warm-white); }
+        .cmd-name { font-family:'IBM Plex Mono',monospace; font-size:.85rem; font-weight:700; color:var(--black); }
+        .cmd-desc { font-size:.9rem; color:var(--gray-3); line-height:1.6; }
+        .cmd-desc .mono { color:var(--amber); }
+        @media (max-width:560px){ .cmd-row{ grid-template-columns:1fr; gap:.3rem; } }
+
+        /* INSTALL */
+        .install { background:var(--warm-white); }
+        .install-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; margin-top:2.4rem; align-items:start; }
+        @media (max-width:820px){ .install-grid{ grid-template-columns:1fr; } }
+        .install pre { background:#111; color:#e8e0d0; border-radius:8px; padding:1.25rem 1.4rem; font-family:'IBM Plex Mono',monospace; font-size:.78rem; line-height:1.9; overflow-x:auto; }
+        .install pre .c { color:#555; } .install pre .p { color:#5a9060; }
+        .badges { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.2rem; }
+        .badge { font-family:'IBM Plex Mono',monospace; font-size:.65rem; background:#fff; border:1px solid var(--border); color:var(--gray-3); padding:.2rem .55rem; border-radius:3px; }
+        .exit { margin-top:1.4rem; display:flex; flex-direction:column; gap:.55rem; }
+        .exit .e { font-size:.85rem; color:var(--gray-3); display:flex; gap:.7rem; align-items:baseline; }
+        .exit .code { font-family:'IBM Plex Mono',monospace; font-weight:700; min-width:1.2rem; }
+        .exit .g{color:var(--green);} .exit .r{color:var(--red);} .exit .a{color:var(--amber);}
+
+        /* FOOTER */
+        footer { background:var(--black); color:var(--gray-4); padding:3rem 2rem; }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem; }
+        .footer-logo { font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.9rem; color:var(--gray-4); text-decoration:none; }
+        .footer-logo span { color:var(--amber); }
+        .footer-left p { font-size:.78rem; color:var(--gray-2); margin-top:.4rem; }
+        .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+        .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:.75rem; color:var(--gray-3); text-decoration:none; transition:color .15s; }
+        .footer-links a:hover { color:var(--off-white); }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+        .crumb{animation:fadeUp .5s ease both;} h1{animation:fadeUp .5s ease .1s both;}
+        .hero-desc{animation:fadeUp .5s ease .2s both;} .hero-actions{animation:fadeUp .5s ease .3s both;} .terminal{animation:fadeUp .5s ease .4s both;}
+        @media (prefers-reduced-motion:reduce){ *{animation:none!important;} }
+        @media (max-width:640px){ .nav-links a:not(.btn-github):not(:last-child){ display:none; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">AUDIT<span>LABS</span></a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/audit-report/">audit-report</a></li>
+            <li><a href="https://github.com/audit-labs/evidence-seal" class="btn-github">View on GitHub →</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="hero-inner">
+        <div>
+            <div class="crumb"><a href="/">Audit Labs</a> / evidence-seal</div>
+            <h1>Prove your evidence<br><em>hasn&rsquo;t changed.</em></h1>
+            <p class="hero-desc">
+                A command-line tool that seals a directory of audit evidence into a tamper-evident
+                manifest. Later, it proves the package is byte-for-byte what was collected &mdash; and
+                names anything that moved. Signing and trusted timestamps prove <em>who</em> and <em>when</em>.
+            </p>
+            <div class="hero-actions">
+                <a href="https://github.com/audit-labs/evidence-seal" class="btn-primary">View on GitHub</a>
+                <a href="#install" class="btn-secondary">Install &amp; quickstart</a>
+            </div>
+        </div>
+        <div class="terminal">
+            <div class="terminal-bar"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+            <div class="terminal-body">
+                <span class="t-comment"># Seal an evidence package</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal seal ./aws_audit_prod_2026-08</span><br>
+                <span class="t-out">&nbsp;&nbsp;sealed 8 files</span><br>
+                <span class="t-out">&nbsp;&nbsp;root </span><span class="t-hash">1265ef6f…</span><span class="t-out">&nbsp; id </span><span class="t-hash">d096c7ed…</span><br>
+                <span class="t-dim">──────────────────────────────</span><br>
+                <span class="t-comment"># Months later — prove nothing changed</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal verify ./aws_audit_prod_2026-08</span><br>
+                <span class="t-out">&nbsp;&nbsp;✓ intact — 8 files match the seal</span><br>
+                <span class="t-comment"># One byte edited after the fact?</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal verify ./aws_audit_prod_2026-08</span><br>
+                <span class="t-bad">&nbsp;&nbsp;✗ TAMPERED — MODIFIED iam_users.csv</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="section-inner">
+        <div class="eyebrow">Three guarantees</div>
+        <h2>Integrity, custody, and proof of origin.</h2>
+        <p class="lede">Each layer is optional and composes with the others &mdash; the core needs no dependencies at all.</p>
+        <div class="guarantees">
+            <div class="card">
+                <div class="num">01 · INTEGRITY</div>
+                <h3>Nothing changed</h3>
+                <p>Every file is hashed with SHA-256 and folded into a single Merkle <span class="mono">root</span>. Any change to any file, name, or byte flips the root &mdash; and <span class="mono">verify</span> names exactly what was modified, added, or removed.</p>
+            </div>
+            <div class="card">
+                <div class="num">02 · CHAIN OF CUSTODY</div>
+                <h3>In order, unbroken</h3>
+                <p>Seal each new package against the last and every manifest links to the previous by hash. A reordered, missing, or spliced-out link is detectable &mdash; an append-only history of a package over time.</p>
+            </div>
+            <div class="card">
+                <div class="num">03 · ATTRIBUTION &amp; TIME</div>
+                <h3>Who and when</h3>
+                <p>Sign a seal with an <span class="mono">ed25519</span> key to attest who collected it. Add an <span class="mono">RFC 3161</span> timestamp from an independent authority to prove it existed by a certain time &mdash; not backdated.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cmds">
+    <div class="section-inner">
+        <div class="eyebrow">The commands</div>
+        <h2>Five verbs, one contract.</h2>
+        <p class="lede">Every command exits <span class="mono">0</span> when all is well, <span class="mono">1</span> on tamper, and <span class="mono">2</span> on a usage error &mdash; so a pipeline can gate on the difference.</p>
+        <div class="cmd-list">
+            <div class="cmd-row"><div class="cmd-name">seal</div><div class="cmd-desc">Hash a directory into a canonical <span class="mono">manifest.json</span> &mdash; with provenance metadata, ignore globs, and an optional <span class="mono">--prev</span> link for chaining.</div></div>
+            <div class="cmd-row"><div class="cmd-name">verify</div><div class="cmd-desc">Recompute and compare. Reports every <span class="mono">MODIFIED</span>, <span class="mono">ADDED</span>, and <span class="mono">REMOVED</span> file, and catches a doctored manifest itself.</div></div>
+            <div class="cmd-row"><div class="cmd-name">chain</div><div class="cmd-desc">Verify a sequence of seals links oldest&nbsp;→&nbsp;newest, catching reordering or a removed link.</div></div>
+            <div class="cmd-row"><div class="cmd-name">sign</div><div class="cmd-desc">Attach an <span class="mono">ed25519</span> signature; <span class="mono">verify --pubkey</span> requires a named signer, proving identity, not just integrity.</div></div>
+            <div class="cmd-row"><div class="cmd-name">timestamp</div><div class="cmd-desc">Request, submit, apply, and verify an <span class="mono">RFC 3161</span> token &mdash; with <span class="mono">--tsa-cert</span> for full CMS signature verification.</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="install" id="install">
+    <div class="section-inner">
+        <div class="eyebrow">Get started</div>
+        <h2>Install &amp; quickstart.</h2>
+        <div class="install-grid">
+            <div>
+                <pre><span class="c"># Core is pure standard library.</span>
+<span class="c"># Extras add signing + timestamping:</span>
+pip install <span class="p">"evidence-seal[sign,timestamp]"</span> \
+  @ git+https://github.com/audit-labs/evidence-seal
+
+<span class="c"># Seal, then verify</span>
+evidence-seal seal ./evidence
+evidence-seal verify ./evidence</pre>
+                <div class="badges">
+                    <span class="badge">Python 3.10+</span>
+                    <span class="badge">GPL-3.0</span>
+                    <span class="badge">stdlib core · 0 deps</span>
+                    <span class="badge">SHA-256 · Merkle</span>
+                </div>
+            </div>
+            <div>
+                <p class="lede">The exit-code contract, at a glance:</p>
+                <div class="exit">
+                    <div class="e"><span class="code g">0</span><span>Intact / valid &mdash; the package matches its seal.</span></div>
+                    <div class="e"><span class="code r">1</span><span>Tamper detected, chain broken, or an invalid signature.</span></div>
+                    <div class="e"><span class="code a">2</span><span>Usage error, or an optional dependency isn&rsquo;t installed.</span></div>
+                </div>
+                <p class="lede" style="margin-top:1.4rem; font-size:.9rem;">
+                    Distinguishing <span class="mono">1</span> from <span class="mono">2</span> lets CI separate
+                    &ldquo;the evidence was tampered with&rdquo; from &ldquo;the job is misconfigured.&rdquo;
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            <a href="/" class="footer-logo">AUDIT<span>LABS</span></a>
+            <p>© 2026 Audit Labs — a two-person team building for the community.</p>
+        </div>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/audit-report/">audit-report</a>
+            <a href="https://github.com/audit-labs/evidence-seal">evidence-seal</a>
+            <a href="https://github.com/audit-labs/gh-attest">gh-attest</a>
+            <a href="https://github.com/audit-labs">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
