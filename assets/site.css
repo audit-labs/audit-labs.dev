@@ -206,6 +206,8 @@ footer { background: var(--black); color: var(--gray-4); padding: 3rem 2rem; }
 
 /* artifact pill sitting on the spine */
 .eco-artifact { align-self: center; justify-self: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.01em; color: var(--amber-light); background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.28); border-radius: 999px; padding: 0.25rem 0.75rem; white-space: nowrap; }
+/* dashed variant — the conditional output of the optional seal step */
+.eco-artifact--dashed { border-style: dashed; }
 
 /* optional step in the spine — dashed border signals it can be skipped */
 .eco-node--seal { border-style: dashed; border-color: rgba(251,191,36,0.32); }
