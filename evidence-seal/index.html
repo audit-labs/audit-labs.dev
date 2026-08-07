@@ -102,8 +102,7 @@
             <div>
                 <pre><span class="c"># Core is pure standard library.</span>
 <span class="c"># Extras add signing + timestamping:</span>
-pip install <span class="p">"evidence-seal[sign,timestamp]"</span> \
-  @ git+https://github.com/audit-labs/evidence-seal
+pip install <span class="p">"evidence-seal[sign,timestamp] @ git+https://github.com/audit-labs/evidence-seal"</span>
 
 <span class="c"># Seal, then verify</span>
 evidence-seal seal ./evidence
