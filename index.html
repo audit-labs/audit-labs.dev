@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audit Labs | Open-Source Audit Automation</title>
+    <title>Audit Labs | Open-source audit evidence toolchain</title>
+    <meta name="description" content="An open-source toolchain for audit evidence: collect it from real systems, seal it tamper-evident, map it to SOC 2 / ISO 27001 / NIST controls, and measure how much of a framework you actually cover.">
     <a rel="me" href="https://c.im/@cmc"></a>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,8 +16,6 @@
     <div class="nav-inner">
         <a href="/" class="logo">AUDIT<span>LABS</span></a>
         <ul class="nav-links">
-            <li><a href="https://github.com/audit-labs/audit-tools">Tools</a></li>
-            <li><a href="https://github.com/audit-labs/tutorials">Tutorials</a></li>
             <li><a href="https://github.com/audit-labs" class="btn-github">GitHub →</a></li>
         </ul>
     </div>
@@ -27,88 +26,138 @@
         <div class="hero-label">Open-source · Free to use</div>
         <h1>Automate the<br><em>evidence trail.</em></h1>
         <p class="hero-desc">
-            Scripts, queries, and guides that help auditors programmatically gather evidence from real environments — databases, Linux systems, cloud platforms, and more.
+            An open-source toolchain for audit evidence — collect it from real systems, seal it tamper-evident, map it to SOC&nbsp;2, ISO&nbsp;27001 &amp; NIST controls, and measure how much of a framework you actually cover. Built for the auditor on the other side.
         </p>
         <div class="hero-actions">
-            <a href="https://github.com/audit-labs/audit-tools" class="btn-primary">Browse the tools</a>
+            <a href="#repos" class="btn-primary">Explore the tools</a>
             <a href="https://github.com/audit-labs/tutorials" class="btn-secondary">See tutorials</a>
         </div>
 
-        <div class="terminal">
-            <div class="terminal-bar">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
+        <div class="ecosystem" role="img" aria-label="The Audit Labs pipeline: audit-tools collects evidence into a CSV package; evidence-seal seals and verifies that package; audit-report turns each package into a control-mapped JSON report; one or more reports form a corpus that control-coverage turns into a coverage percentage, blind spots, a Statement of Applicability, trend, and crosswalk.">
+            <div class="eco-cap">One pipeline · collect → seal → report → measure</div>
+
+            <div class="eco-node">
+                <span class="eco-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+                <div class="eco-main">
+                    <span class="eco-name">audit-tools</span>
+                    <span class="eco-role">Collect evidence — cloud, GitHub, databases &amp; OS</span>
+                </div>
             </div>
-            <div class="terminal-body">
-                <span class="t-comment"># Pull user access report from a PostgreSQL database</span><br>
-                <span class="t-prompt">$</span> <span class="t-cmd">python3 databases/postgres/user_access.py</span><br>
-                <span class="t-out">✓ Connected to audit_db</span><br>
-                <span class="t-out">✓ Exported 142 rows → </span><span class="t-path">output/user_access_2025-01.csv</span><br>
-                <span class="t-dim">──────────────────────────────────</span><br>
-                <span class="t-comment"># Sample 25 items using random seed for reproducibility</span><br>
-                <span class="t-prompt">$</span> <span class="t-cmd">python3 sampling/random_sample.py --n 25 --seed 42</span><br>
-                <span class="t-out">✓ Sample written → </span><span class="t-path">output/sample_25.csv</span>
+
+            <div class="eco-connector"></div>
+
+            <div class="eco-flow">
+                <span class="eco-artifact">CSV evidence package</span>
+                <div class="eco-branch">
+                    <div class="eco-node eco-node--seal">
+                        <span class="eco-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+                        <div class="eco-main">
+                            <span class="eco-name">evidence-seal</span>
+                            <span class="eco-role">Seal &amp; verify integrity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="eco-connector"></div>
+
+            <div class="eco-node">
+                <span class="eco-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></span>
+                <div class="eco-main">
+                    <span class="eco-name">audit-report</span>
+                    <span class="eco-role">Map findings to SOC 2, ISO 27001 &amp; NIST → JSON</span>
+                </div>
+            </div>
+
+            <div class="eco-connector"></div>
+            <span class="eco-artifact">one or more reports = a corpus</span>
+            <div class="eco-connector"></div>
+
+            <div class="eco-node eco-node--flagship">
+                <span class="eco-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg></span>
+                <div class="eco-main">
+                    <span class="eco-name">control-coverage</span>
+                    <span class="eco-role">Score the corpus against whole frameworks</span>
+                </div>
+            </div>
+
+            <div class="eco-outputs">
+                <span>coverage %</span>
+                <span>blind spots</span>
+                <span>Statement of Applicability</span>
+                <span>trend</span>
+                <span>crosswalk</span>
             </div>
         </div>
     </div>
 </header>
 
-<section class="repos">
+<section class="repos" id="repos">
     <div class="section-inner">
         <div class="section-header">
-            <h2>Five repos.<br>Pick what you need.</h2>
+            <h2>Six repos.<br>Pick what you need.</h2>
             <a href="https://github.com/audit-labs" class="section-link">View all on GitHub →</a>
         </div>
+        <p class="lede" style="margin: -0.5rem 0 2.4rem;">Each tool does one job and hands off to the next — run a single step or the whole chain, from collecting evidence to measuring control coverage.</p>
         <div class="repo-grid">
             <a href="https://github.com/audit-labs/audit-tools" class="repo-card">
-                <div class="repo-tag">Tools</div>
+                <div class="repo-tag">Collect</div>
                 <h3>audit-labs/audit-tools</h3>
-                <p>Ready-to-run scripts for common audit procedures: pseudo-random sampling, GITC extraction, database user access, Linux OS reports, and more. Use as-is or adapt to your environment.</p>
+                <p>Ready-to-run scripts for common audit procedures: pseudo-random sampling, GITC extraction, database user access, Linux OS reports, and more. Gathers raw evidence into CSV packages — use as-is or adapt to your environment.</p>
                 <div class="repo-langs">
                     <span class="lang-badge">Python</span>
                     <span class="lang-badge">Shell</span>
                     <span class="lang-badge">SQL</span>
                 </div>
             </a>
-            <a href="https://github.com/audit-labs/tutorials" class="repo-card">
-                <div class="repo-tag">Tutorials</div>
-                <h3>audit-labs/tutorials</h3>
-                <p>Step-by-step guides on building your own audit automation using Python, the CLI, and APIs. Good starting point if you're new to scripting or want to extend existing tools.</p>
-                <div class="repo-langs">
-                    <span class="lang-badge">Jupyter</span>
-                    <span class="lang-badge">Python</span>
-                    <span class="lang-badge">Markdown</span>
-                </div>
-            </a>
-            <a href="/gh-attest/" class="repo-card">
-                <div class="repo-tag">GitHub App</div>
-                <h3>audit-labs/gh-attest</h3>
-                <p>A read-only GitHub App that turns your security configuration into compliance evidence. Captures branch protection, scanning alerts, and org access over time, maps them to SOC 2 and ISO 27001 controls, and exports CSV and PDF evidence packages.</p>
-                <div class="repo-langs">
-                    <span class="lang-badge">TypeScript</span>
-                    <span class="lang-badge">Cloudflare</span>
-                    <span class="lang-badge">D1</span>
-                </div>
-            </a>
-            <a href="/audit-report/" class="repo-card">
-                <div class="repo-tag">CLI</div>
-                <h3>audit-labs/audit-report</h3>
-                <p>Turns an audit-tools evidence package into a control-mapped, auditor-ready report — Markdown, self-contained HTML, or JSON. Declarative rulesets map findings to SOC 2, ISO 27001, and NIST, with diff and trend modes for tracking drift over time.</p>
-                <div class="repo-langs">
-                    <span class="lang-badge">Python</span>
-                    <span class="lang-badge">YAML</span>
-                    <span class="lang-badge">HTML</span>
-                </div>
-            </a>
             <a href="/evidence-seal/" class="repo-card">
-                <div class="repo-tag">CLI</div>
+                <div class="repo-tag">Seal</div>
                 <h3>audit-labs/evidence-seal</h3>
                 <p>Tamper-evident seals and chain of custody for evidence packages. SHA-256 Merkle manifests catch any change to any file; sequential seals chain into a verifiable history; optional ed25519 signing and RFC 3161 timestamping prove who sealed it and when.</p>
                 <div class="repo-langs">
                     <span class="lang-badge">Python</span>
                     <span class="lang-badge">ed25519</span>
                     <span class="lang-badge">RFC 3161</span>
+                </div>
+            </a>
+            <a href="/audit-report/" class="repo-card">
+                <div class="repo-tag">Report</div>
+                <h3>audit-labs/audit-report</h3>
+                <p>Turns an audit-tools evidence package into a control-mapped, auditor-ready report — Markdown, self-contained HTML, or JSON. Declarative rulesets map findings to SOC 2, ISO 27001, and NIST 800-53, with diff and trend modes for tracking drift over time.</p>
+                <div class="repo-langs">
+                    <span class="lang-badge">Python</span>
+                    <span class="lang-badge">YAML</span>
+                    <span class="lang-badge">HTML</span>
+                </div>
+            </a>
+            <a href="/control-coverage/" class="repo-card">
+                <div class="repo-tag">Measure</div>
+                <h3>audit-labs/control-coverage</h3>
+                <p>Control-first coverage analysis. Scores an evidence corpus against the complete catalog of a framework's controls — SOC 2, ISO 27001, NIST 800-53 — to report a true coverage percentage, the blind spots no finding touches, and a Statement of Applicability. Reads audit-report JSON.</p>
+                <div class="repo-langs">
+                    <span class="lang-badge">Python</span>
+                    <span class="lang-badge">YAML</span>
+                    <span class="lang-badge">HTML</span>
+                </div>
+            </a>
+            <a href="/gh-attest/" class="repo-card">
+                <div class="repo-tag">GitHub App</div>
+                <h3>audit-labs/gh-attest</h3>
+                <p>A read-only GitHub App that collects continuously — turning your GitHub security configuration into compliance evidence. Captures branch protection, scanning alerts, and org access over time, maps them to SOC 2 and ISO 27001 controls, and exports CSV and PDF evidence packages.</p>
+                <div class="repo-langs">
+                    <span class="lang-badge">TypeScript</span>
+                    <span class="lang-badge">Cloudflare</span>
+                    <span class="lang-badge">D1</span>
+                </div>
+            </a>
+            <a href="https://github.com/audit-labs/tutorials" class="repo-card">
+                <div class="repo-tag">Learn</div>
+                <h3>audit-labs/tutorials</h3>
+                <p>Step-by-step guides on building your own audit automation using Python, the CLI, and APIs. Good starting point if you're new to scripting or want to extend any of the tools above.</p>
+                <div class="repo-langs">
+                    <span class="lang-badge">Jupyter</span>
+                    <span class="lang-badge">Python</span>
+                    <span class="lang-badge">Markdown</span>
                 </div>
             </a>
         </div>
@@ -118,8 +167,8 @@
 <section class="tools">
     <div class="section-inner">
         <div class="tools-intro">
-            <h2>What's in the toolbox</h2>
-            <p>Coverage across the systems auditors most commonly deal with, with more being added.</p>
+            <h2>Inside audit-tools</h2>
+            <p>Step one of the pipeline — the collectors that pull raw evidence from the systems auditors most commonly deal with. New systems are added over time.</p>
         </div>
         <div class="tool-list">
             <div class="tool-item">
@@ -163,7 +212,7 @@
             <span class="framework-tag">SOX</span>
             <span class="framework-tag">SOC 1 / 2</span>
             <span class="framework-tag">ISO 27001</span>
-            <span class="framework-tag">NIST CSF</span>
+            <span class="framework-tag">NIST 800-53</span>
             <span class="framework-tag">ITGC</span>
         </div>
     </div>
@@ -176,11 +225,6 @@
             <p>© 2026 Audit Labs — a two-person team building for the community.</p>
         </div>
         <div class="footer-links">
-            <a href="https://github.com/audit-labs/audit-tools">audit-tools</a>
-            <a href="/audit-report/">audit-report</a>
-            <a href="/evidence-seal/">evidence-seal</a>
-            <a href="/gh-attest/">gh-attest</a>
-            <a href="https://github.com/audit-labs/tutorials">tutorials</a>
             <a href="https://github.com/audit-labs">GitHub</a>
         </div>
     </div>
