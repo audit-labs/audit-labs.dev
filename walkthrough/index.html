@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End-to-end walkthrough | Audit Labs</title>
+    <meta name="description" content="Watch one finding travel the whole Audit Labs pipeline — collect it with audit-tools, seal it with evidence-seal, map it to controls with audit-report, and measure coverage with control-coverage.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/site.css">
+    <style>
+        /* ---- walkthrough-specific layout (scoped to this page) ---- */
+        .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6rem; margin-top: 2.4rem; align-items: start; }
+        .stage > * { min-width: 0; }
+        @media (max-width: 860px) { .stage { grid-template-columns: 1fr; gap: 1.7rem; } }
+
+        .stage-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.6rem; }
+        .stage-num b { font-weight: 700; color: var(--black); background: #fef3c7; border-radius: 3px; padding: 0.05rem 0.45rem; }
+        .stage-lede { color: var(--gray-3); font-size: 0.98rem; line-height: 1.7; margin-top: 0.7rem; }
+        .stage-lede .mono { color: var(--gray-1); font-family: 'IBM Plex Mono', monospace; font-size: 0.86em; }
+        .stage-lede .ctrl { color: var(--amber); font-family: 'IBM Plex Mono', monospace; font-size: 0.84em; }
+
+        .stage pre { background: #111; color: #e8e0d0; border-radius: 8px; padding: 1.1rem 1.3rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; line-height: 1.85; overflow-x: auto; margin-top: 1.3rem; }
+        .stage pre .c { color: #555; } .stage pre .p { color: #5a9060; } .stage pre .o { color: #7a9f7a; } .stage pre .h { color: #8a8a8a; }
+
+        /* artifact panel — looks like a small file/output viewer */
+        .panel { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #fff; }
+        .panel-bar { background: var(--off-white); border-bottom: 1px solid var(--border); padding: 0.5rem 0.9rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--gray-3); display: flex; align-items: center; gap: 0.55rem; }
+        .panel-bar .fname { color: var(--gray-1); font-weight: 700; }
+        .panel-bar .tag { margin-left: auto; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-4); }
+        .panel-body { overflow-x: auto; }
+
+        table.evi { border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; width: 100%; white-space: nowrap; }
+        table.evi th { text-align: left; color: var(--gray-4); font-weight: 500; padding: 0.5rem 0.85rem; border-bottom: 1px solid var(--border); }
+        table.evi td { padding: 0.45rem 0.85rem; border-bottom: 1px solid var(--border); color: var(--gray-1); }
+        table.evi tr:last-child td { border-bottom: none; }
+        tr.hl td { background: #fef3c7; color: var(--black); }
+        .bad { color: var(--red); font-weight: 700; }
+        .ok { color: var(--green); }
+
+        /* json artifact */
+        .json { font-family: 'IBM Plex Mono', monospace; font-size: 0.73rem; line-height: 1.75; padding: 1rem 1.15rem; white-space: pre; color: #4a4a4a; }
+        .json .jk { color: var(--gray-1); } .json .js { color: var(--green); } .json .jn { color: var(--amber); }
+        .json .jc { color: var(--amber); font-weight: 700; }
+        .json-hl { background: #fef3c7; display: block; border-radius: 3px; }
+
+        /* coverage meter */
+        .cov { padding: 1.2rem 1.15rem; }
+        .cov-row { display: flex; align-items: baseline; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; color: var(--gray-1); margin-bottom: 0.5rem; }
+        .cov-row b { font-size: 1.05rem; color: var(--black); }
+        .meter { height: 8px; background: var(--off-white); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 1.2rem; }
+        .meter > span { display: block; height: 100%; width: 63%; background: linear-gradient(90deg, var(--amber), var(--amber-light)); }
+        .cov h5 { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-4); margin: 0.4rem 0 0.55rem; }
+        .chip-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+        .chip { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; border-radius: 4px; padding: 0.16rem 0.5rem; border: 1px solid var(--border); color: var(--gray-3); background: #fff; }
+        .chip.on { color: var(--green); border-color: rgba(21,128,61,0.35); background: rgba(21,128,61,0.06); }
+        .chip.here { color: var(--amber); border-color: rgba(217,119,6,0.4); background: #fef3c7; font-weight: 700; }
+        .blind { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--gray-3); line-height: 1.9; }
+        .blind b { color: var(--red); }
+
+        /* through-line legend */
+        .thread { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 2rem; background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 6px; padding: 0.85rem 1.1rem; }
+        .thread .lab { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+        .thread .val { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--gray-1); }
+        .thread .val b { color: var(--black); }
+
+        .stage-link { display: inline-block; margin-top: 1.2rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; color: var(--gray-3); text-decoration: none; border-bottom: 1px solid var(--gray-5); padding-bottom: 1px; transition: color 0.15s; }
+        .stage-link:hover { color: var(--amber); }
+
+        .contract-list { margin-top: 2.2rem; }
+        section.alt { background: var(--warm-white); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">AUDIT<span>LABS</span></a>
+        <ul class="nav-links">
+            <li><a href="https://github.com/audit-labs" class="btn-github">GitHub →</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="hero split">
+    <div class="hero-inner">
+        <div>
+            <div class="crumb"><a href="/">Audit Labs</a> / walkthrough</div>
+            <h1>One finding,<br><em>the whole pipeline.</em></h1>
+            <p class="hero-desc">
+                A worked end-to-end example. We collect evidence from a fictional company&rsquo;s
+                cloud, seal it, map it to controls, and measure coverage &mdash; and follow a
+                <em>single</em> risky account the whole way down, so you can see exactly what each
+                tool hands to the next.
+            </p>
+            <div class="hero-actions">
+                <a href="#step1" class="btn-primary">Start at step 1</a>
+                <a href="/#repos" class="btn-secondary">The tools</a>
+            </div>
+        </div>
+        <div class="terminal">
+            <div class="terminal-bar"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+            <div class="terminal-body">
+                <span class="t-comment"># 1 · COLLECT — pull evidence from live systems</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">python audit_tui.py</span> <span class="t-dim">→</span> <span class="t-path">output/aws_audit_northwind_2026-07-29/</span><br>
+                <span class="t-comment"># 2 · SEAL — anchor chain of custody</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal seal ./output/aws_audit_northwind_2026-07-29</span><br>
+                <span class="t-out">&nbsp;&nbsp;sealed 6 files &nbsp;root </span><span class="t-hash">1265ef6f…</span><br>
+                <span class="t-comment"># 3 · REPORT — map findings to controls</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">audit-report ./output/aws_audit_northwind_2026-07-29 --format json</span><br>
+                <span class="t-out">&nbsp;&nbsp;12 checks · 3 exceptions</span> <span class="t-dim">→</span> <span class="t-path">reports/aws.json</span><br>
+                <span class="t-comment"># 4 · MEASURE — score the corpus vs the framework</span><br>
+                <span class="t-prompt">$</span> <span class="t-cmd">control-coverage reports/ --framework SOC2</span><br>
+                <span class="t-out">&nbsp;&nbsp;SOC 2 · 63% covered · 4 blind spots</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- SCENARIO -->
+<section>
+    <div class="section-inner">
+        <div class="eyebrow">The scenario</div>
+        <h2>Northwind, a SaaS company, mid-SOC&nbsp;2 fieldwork.</h2>
+        <p class="lede">
+            Northwind runs on AWS, GitHub, and Postgres. You&rsquo;re gathering evidence for a SOC&nbsp;2
+            Type&nbsp;II examination covering Q3&nbsp;2026. Rather than trace every file, we&rsquo;ll follow
+            one account that turns out to matter &mdash; and watch it change shape at each handoff.
+        </p>
+        <div class="thread">
+            <span class="lab">Follow this row →</span>
+            <span class="val"><b>j.hale</b> — an IAM user with <b>console access</b> and <b>no MFA</b></span>
+        </div>
+    </div>
+</section>
+
+<!-- STEP 1 · COLLECT -->
+<section id="step1" class="alt">
+    <div class="section-inner">
+        <div class="stage-num"><b>Step 1</b> · Collect &nbsp;—&nbsp; audit-tools</div>
+        <h2>Raw evidence, straight from the systems.</h2>
+        <div class="stage">
+            <div>
+                <p class="stage-lede">
+                    <span class="mono">audit-tools</span> runs read-only collectors against each platform and
+                    writes plain CSVs into one dated package directory &mdash; here,
+                    <span class="mono">aws_audit_northwind_2026-07-29/</span>. No judgments yet: just the
+                    facts as the systems report them, one file per procedure.
+                </p>
+                <p class="stage-lede">
+                    In <span class="mono">iam_users.csv</span>, most users are fine. One row isn&rsquo;t:
+                    <span class="mono">j.hale</span> can log in to the console but has no second factor. That&rsquo;s
+                    our thread.
+                </p>
+                <pre><span class="c"># Interactive: pick platform, checks, credentials</span>
+python audit_tui.py
+
+<span class="c"># → writes a package of CSVs</span>
+output/aws_audit_northwind_2026-07-29/
+  <span class="o">iam_users.csv  password_policy.csv  account_security.csv</span>
+  <span class="o">open_security_groups.csv  config_recorders.csv  cloudtrail.csv</span></pre>
+                <a href="https://github.com/audit-labs/audit-tools" class="stage-link">audit-tools on GitHub →</a>
+            </div>
+            <div class="panel">
+                <div class="panel-bar"><span class="fname">iam_users.csv</span><span class="tag">6-file package</span></div>
+                <div class="panel-body">
+                    <table class="evi">
+                        <tr><th>user</th><th>console_password</th><th>mfa_enabled</th><th>oldest_key_age_days</th></tr>
+                        <tr><td>a.okafor</td><td>True</td><td class="ok">True</td><td>62</td></tr>
+                        <tr class="hl"><td>j.hale</td><td>True</td><td class="bad">False</td><td>404</td></tr>
+                        <tr><td>svc-deploy</td><td>False</td><td>—</td><td>91</td></tr>
+                        <tr><td>r.mendez</td><td>True</td><td class="ok">True</td><td>15</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STEP 2 · SEAL -->
+<section>
+    <div class="section-inner">
+        <div class="stage-num"><b>Step 2</b> · Seal &nbsp;—&nbsp; evidence-seal &nbsp;<span style="color:var(--gray-4);text-transform:none;letter-spacing:0">(optional)</span></div>
+        <h2>Freeze the package before anyone touches it.</h2>
+        <div class="stage">
+            <div>
+                <p class="stage-lede">
+                    The moment collection finishes, seal the directory. <span class="mono">evidence-seal</span>
+                    hashes every file into a single Merkle <span class="mono">root</span>. Months later,
+                    <span class="mono">verify</span> proves the package is byte-for-byte what you collected &mdash;
+                    and names anything that moved.
+                </p>
+                <p class="stage-lede">
+                    If someone later edits <span class="mono">j.hale</span>&rsquo;s row to look compliant, the
+                    root no longer matches and <span class="mono">verify</span> fails loudly. Re-seal each
+                    collection round with <span class="mono">--prev</span> to chain a Type&nbsp;II custody history.
+                </p>
+                <pre><span class="c"># Seal, then (much later) verify</span>
+evidence-seal seal ./output/aws_audit_northwind_2026-07-29
+evidence-seal verify ./output/aws_audit_northwind_2026-07-29</pre>
+                <a href="/evidence-seal/" class="stage-link">evidence-seal details →</a>
+            </div>
+            <div class="panel">
+                <div class="panel-bar"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div><span class="fname" style="margin-left:.3rem">verify</span></div>
+                <div class="terminal-body" style="background:#111;">
+                    <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal seal ./output/aws_audit_northwind_2026-07-29</span><br>
+                    <span class="t-out">&nbsp;&nbsp;sealed 6 files</span><br>
+                    <span class="t-out">&nbsp;&nbsp;root </span><span class="t-hash">1265ef6f…</span><span class="t-out">&nbsp; id </span><span class="t-hash">d096c7ed…</span><br>
+                    <span class="t-dim">──────────────────────────────</span><br>
+                    <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal verify ./…northwind_2026-07-29</span><br>
+                    <span class="t-out">&nbsp;&nbsp;✓ intact — 6 files match the seal</span><br>
+                    <span class="t-comment"># someone edited j.hale&rsquo;s row?</span><br>
+                    <span class="t-prompt">$</span> <span class="t-cmd">evidence-seal verify ./…northwind_2026-07-29</span><br>
+                    <span class="t-bad">&nbsp;&nbsp;✗ TAMPERED — MODIFIED iam_users.csv</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STEP 3 · REPORT -->
+<section class="alt">
+    <div class="section-inner">
+        <div class="stage-num"><b>Step 3</b> · Report &nbsp;—&nbsp; audit-report</div>
+        <h2>Turn rows into findings, mapped to controls.</h2>
+        <div class="stage">
+            <div>
+                <p class="stage-lede">
+                    <span class="mono">audit-report</span> reads the CSV package and applies a declarative
+                    ruleset. A rule names a table, a check, and the controls the signal is evidence
+                    <em>for</em>. The <span class="mono">iam-console-no-mfa</span> rule fails
+                    <span class="mono">j.hale</span> and maps it to <span class="ctrl">SOC2:CC6.1</span>,
+                    <span class="ctrl">NIST:IA-2</span>, and <span class="ctrl">ISO:A.5.17</span>.
+                </p>
+                <p class="stage-lede">
+                    JSON feeds the next stage; the same run also emits an auditor-ready HTML report.
+                    Add <span class="mono">--baseline</span> to diff against last quarter and flag drift.
+                </p>
+                <pre><span class="c"># Machine-readable JSON for the next stage</span>
+audit-report ./output/aws_audit_northwind_2026-07-29 \
+  --format json,html --out reports/
+
+<span class="o">12 checks · 3 exceptions</span> <span class="c">→ reports/aws.json</span></pre>
+                <a href="/audit-report/" class="stage-link">audit-report details →</a>
+            </div>
+            <div class="panel">
+                <div class="panel-bar"><span class="fname">reports/aws.json</span><span class="tag">one finding</span></div>
+                <div class="json"><span class="jk">"rule"</span>: <span class="js">"iam-console-no-mfa"</span>,
+<span class="jk">"status"</span>: <span class="js">"fail"</span>,  <span class="jk">"severity"</span>: <span class="js">"high"</span>,
+<span class="jk">"controls"</span>: [<span class="jc">"SOC2:CC6.1"</span>, <span class="jc">"NIST:IA-2"</span>, <span class="jc">"ISO:A.5.17"</span>],
+<span class="jk">"evidence"</span>: {
+  <span class="jk">"table"</span>: <span class="js">"iam_users"</span>,
+  <span class="jk">"rows"</span>: [<span class="json-hl">    { <span class="jk">"user"</span>: <span class="js">"j.hale"</span>,
+      <span class="jk">"console_password"</span>: <span class="jn">true</span>,
+      <span class="jk">"mfa_enabled"</span>: <span class="jn">false</span> }</span>  ]
+}</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STEP 4 · MEASURE -->
+<section>
+    <div class="section-inner">
+        <div class="stage-num"><b>Step 4</b> · Measure &nbsp;—&nbsp; control-coverage</div>
+        <h2>Score the corpus against the whole framework.</h2>
+        <div class="stage">
+            <div>
+                <p class="stage-lede">
+                    Every earlier tool is evidence-first &mdash; it can only speak to what you collected.
+                    <span class="mono">control-coverage</span> supplies the missing denominator: the
+                    <em>complete</em> catalog of a framework&rsquo;s controls. Feed it the report JSON(s) and it
+                    reports coverage&nbsp;%, the blind spots nothing touches, and a Statement of Applicability.
+                </p>
+                <p class="stage-lede">
+                    The payoff for our thread: <span class="ctrl">CC6.1</span> is now
+                    <b>addressed</b> &mdash; even as an <em>exception</em>, the control is no longer a blind spot,
+                    because step&nbsp;3 produced a finding mapped to it. The blind spots are the controls
+                    <em>no</em> collector reached at all.
+                </p>
+                <pre><span class="c"># Fold all reports into one framework picture</span>
+control-coverage reports/ --framework SOC2 \
+  --format md,html,soa --out out/
+
+<span class="c"># Gate CI under a coverage floor</span>
+control-coverage reports/ --fail-under 60</pre>
+                <a href="/control-coverage/" class="stage-link">control-coverage details →</a>
+            </div>
+            <div class="panel">
+                <div class="panel-bar"><span class="fname">SOC 2 — coverage</span><span class="tag">out/coverage.md</span></div>
+                <div class="cov">
+                    <div class="cov-row"><span>Trust Services Criteria touched</span><b>63%</b></div>
+                    <div class="meter"><span></span></div>
+                    <h5>Addressed by evidence</h5>
+                    <div class="chip-row">
+                        <span class="chip here">CC6.1</span>
+                        <span class="chip on">CC6.2</span>
+                        <span class="chip on">CC6.6</span>
+                        <span class="chip on">CC7.1</span>
+                        <span class="chip on">CC7.2</span>
+                        <span class="chip on">CC8.1</span>
+                    </div>
+                    <h5>Blind spots — no evidence collected</h5>
+                    <div class="blind">
+                        <b>CC1.4</b> &nbsp;Background checks / HR onboarding<br>
+                        <b>CC2.3</b> &nbsp;Communicating objectives to external parties<br>
+                        <b>CC9.2</b> &nbsp;Vendor &amp; third-party risk management<br>
+                        <b>A1.2</b> &nbsp;&nbsp;Environmental protections
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY IT COMPOSES -->
+<section class="cmds">
+    <div class="section-inner">
+        <div class="eyebrow">Why it composes</div>
+        <h2>Four stages, three stable contracts.</h2>
+        <p class="lede">
+            Each tool cares only about the <em>shape</em> of the artifact it&rsquo;s handed. That&rsquo;s why you can
+            run one step or the whole chain &mdash; and swap the collector without the rest noticing.
+        </p>
+        <div class="cmd-list contract-list">
+            <div class="cmd-row"><div class="cmd-name">CSV package</div><div class="cmd-desc"><span class="mono">audit-tools</span> → <span class="mono">evidence-seal</span> &amp; <span class="mono">audit-report</span>. A dated directory of plain CSVs — the one artifact everything downstream reads.</div></div>
+            <div class="cmd-row"><div class="cmd-name">sealed package</div><div class="cmd-desc"><span class="mono">evidence-seal</span> wraps the package with a Merkle manifest — optional, and transparent to the stages after it.</div></div>
+            <div class="cmd-row"><div class="cmd-name">findings JSON</div><div class="cmd-desc"><span class="mono">audit-report</span> → <span class="mono">control-coverage</span>. One JSON per platform/date; a folder of them is a <em>corpus</em>.</div></div>
+            <div class="cmd-row"><div class="cmd-name">coverage + SoA</div><div class="cmd-desc"><span class="mono">control-coverage</span> emits the numbers nothing upstream can: coverage %, blind spots, Statement of Applicability.</div></div>
+        </div>
+        <p class="lede" style="margin-top:2rem;">
+            <b>Swap the collector, free of charge.</b> <a href="/gh-attest/" style="color:var(--amber);text-decoration:none;">gh-attest</a>
+            is the continuous variant of step&nbsp;1 — a read-only GitHub App that captures branch
+            protection and access <em>over time</em> and exports the same CSV-package shape. It drops
+            straight into steps&nbsp;2–4 unchanged.
+        </p>
+    </div>
+</section>
+
+<!-- FRAMEWORKS strip -->
+<section class="frameworks">
+    <div class="frameworks-inner">
+        <span class="frameworks-label">Built to produce evidence for</span>
+        <div class="frameworks-list">
+            <span class="framework-tag">SOX</span>
+            <span class="framework-tag">SOC 1 / 2</span>
+            <span class="framework-tag">ISO 27001</span>
+            <span class="framework-tag">NIST 800-53</span>
+            <span class="framework-tag">ITGC</span>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            <a href="/" class="footer-logo">AUDIT<span>LABS</span></a>
+            <p>© 2026 Audit Labs — an independent, open-source project built for the community.</p>
+            <p class="footer-note">Illustrative example. &ldquo;Northwind&rdquo; and its findings are fictional. Framework mappings are the maintainers&rsquo; own interpretation — a failing row is evidence, not a compliance verdict.</p>
+        </div>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="https://github.com/audit-labs">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
