@@ -26,7 +26,7 @@
             <div class="crumb"><a href="/">Audit Labs</a> / gh-attest</div>
             <h1>Your GitHub settings,<br><em>as audit evidence.</em></h1>
             <p class="hero-desc">
-                A read-only GitHub App that records branch protection, scanning alerts, and
+                A read-only, self-hosted GitHub App that records branch protection, scanning alerts, and
                 organization access as they change &mdash; maps each signal to SOC&nbsp;2 and
                 ISO&nbsp;27001 controls, and exports point-in-time CSV and PDF evidence packages.
                 It never modifies your repositories, permissions, or membership.
@@ -56,7 +56,7 @@
     <div class="section-inner">
         <div class="eyebrow">How it works</div>
         <h2>Capture, map, export.</h2>
-        <p class="lede">Evidence accrues on its own &mdash; you install the app once and pull a package whenever an auditor asks.</p>
+        <p class="lede">Evidence accrues on its own &mdash; you deploy it once, install the app on your org, and pull a package whenever an auditor asks.</p>
         <div class="guarantees">
             <div class="card">
                 <div class="num">01 · CAPTURE</div>
@@ -106,13 +106,13 @@
 <section class="install" id="start">
     <div class="section-inner">
         <div class="eyebrow">Get started</div>
-        <h2>Install once, evidence accrues.</h2>
+        <h2>Deploy once, evidence accrues.</h2>
         <div class="install-grid">
             <div>
-                <pre><span class="c"># 1. Install the GitHub App on your org</span>
+                <pre><span class="c"># 1. Deploy the Worker to your Cloudflare account</span>
+<span class="c"># 2. Register your own GitHub App for it</span>
 <span class="c">#    (read-only, least-privilege scopes)</span>
-<span class="c"># 2. Select the repositories to cover</span>
-<span class="c"># 3. Snapshots begin immediately</span>
+<span class="c"># 3. Install the App on your org</span>
 <span class="c"># 4. Export a package whenever you need one</span></pre>
                 <div class="badges">
                     <span class="badge">TypeScript</span>
@@ -135,13 +135,12 @@
                     turns offline evidence packages into the same control-mapped reports.
                 </p>
                 <p class="lede" style="margin-top:.8rem; font-size:.9rem;">
-                    Rather not trust our tenant?
-                    <a href="https://github.com/audit-labs/gh-attest#deployment" style="color:var(--amber); text-decoration:none;">Self-host it</a>
-                    in your own Cloudflare account — it&rsquo;s a single Worker with D1 and R2.
-                    <a href="https://github.com/audit-labs/gh-attest/blob/main/PRIVACY.md" style="color:var(--amber); text-decoration:none;">Privacy</a>
+                    It runs in your own Cloudflare account &mdash; a single Worker with D1, R2, and a queue.
+                    There is no hosted instance; your evidence never leaves your account. See the
+                    <a href="https://github.com/audit-labs/gh-attest#deployment" style="color:var(--amber); text-decoration:none;">deployment steps</a>,
+                    <a href="https://github.com/audit-labs/gh-attest/blob/main/PRIVACY.md" style="color:var(--amber); text-decoration:none;">data handling</a>,
                     and
-                    <a href="https://github.com/audit-labs/gh-attest/blob/main/SECURITY.md" style="color:var(--amber); text-decoration:none;">security</a>
-                    policies apply to the hosted instance.
+                    <a href="https://github.com/audit-labs/gh-attest/blob/main/SECURITY.md" style="color:var(--amber); text-decoration:none;">security policy</a>.
                 </p>
             </div>
         </div>
