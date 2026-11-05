@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>evidence-seal | Audit Labs</title>
-    <meta name="description" content="Tamper-evident seals and chain of custody for audit evidence. SHA-256 Merkle manifests, seal chaining, optional ed25519 signing and RFC 3161 timestamping.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/site.css">
-</head>
-<body>
+#+title: evidence-seal | Audit Labs
+#+description: Tamper-evident seals and chain of custody for audit evidence. SHA-256 Merkle manifests, seal chaining, optional ed25519 signing and RFC 3161 timestamping.
+#+nav_label: View source →
+#+nav_url: https://gitbay.org/audit-labs/evidence-seal
+#+tagline: a two-person team building for the community.
 
-<nav>
-    <div class="nav-inner">
-        <a href="/" class="logo">AUDIT<span>LABS</span></a>
-        <ul class="nav-links">
-            <li><a href="https://github.com/audit-labs/evidence-seal" class="btn-github">View on GitHub →</a></li>
-        </ul>
-    </div>
-</nav>
-
+#+begin_export html
 <header class="hero split">
     <div class="hero-inner">
         <div>
@@ -31,7 +16,7 @@
                 names anything that moved. Signing and trusted timestamps prove <em>who</em> and <em>when</em>.
             </p>
             <div class="hero-actions">
-                <a href="https://github.com/audit-labs/evidence-seal" class="btn-primary">View on GitHub</a>
+                <a href="https://gitbay.org/audit-labs/evidence-seal" class="btn-primary">View source</a>
                 <a href="#install" class="btn-secondary">Install &amp; quickstart</a>
             </div>
         </div>
@@ -129,19 +114,4 @@ evidence-seal verify ./evidence</pre>
         </div>
     </div>
 </section>
-
-<footer>
-    <div class="footer-inner">
-        <div class="footer-left">
-            <a href="/" class="footer-logo">AUDIT<span>LABS</span></a>
-            <p>© 2026 Audit Labs — a two-person team building for the community.</p>
-        </div>
-        <div class="footer-links">
-            <a href="/">Home</a>
-            <a href="https://github.com/audit-labs">GitHub</a>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+#+end_export

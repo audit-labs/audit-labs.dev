@@ -1,0 +1,34 @@
+#+title: audit-labs.dev
+
+* what
+source for audit-labs.dev. built with [[https://gitbay.org/krz/orgo][orgo]].
+
+* structure
+#+begin_example
+content/          pages; each is a directory index (evidence-seal/index.org -> /evidence-seal/)
+content/orgo.toml site config
+templates/        base.html: head, nav, footer, filled from each page's keywords
+static/assets/    site.css, plus walkthrough.css for /walkthrough/
+#+end_example
+
+page bodies are html export blocks. base.html lists the keywords it reads.
+
+* build
+#+begin_src sh
+./build.sh
+#+end_src
+
+output goes to public/. to preview:
+
+#+begin_src sh
+orgo serve content -o /tmp/audit-labs-preview
+#+end_src
+
+* deploy
+gitbay serves the =pages= branch at audit-labs.dev. from an up-to-date main:
+
+#+begin_src sh
+./deploy.sh
+#+end_src
+
+it builds, commits public/ to =pages= as "Build <sha>", and pushes.

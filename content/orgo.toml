@@ -1,0 +1,28 @@
+# orgo configuration for audit-labs.dev.
+#
+# content/ is the URL root; every page is a directory index (evidence-seal/index.org
+# publishes at /evidence-seal/). Page bodies are HTML export blocks, laid out by
+# templates/base.html.
+#
+#   ./build.sh                                     # build public/
+#   ./deploy.sh                                    # build, then publish to the pages branch
+#   orgo serve content -o /tmp/audit-labs-preview  # write and preview
+
+[site]
+title = "Audit Labs"
+description = "Open-source audit evidence toolchain."
+language = "en"
+base_url = "https://audit-labs.dev"
+
+[nav]
+# The nav is written in templates/base.html.
+mode = "none"
+
+[templates]
+dir = "../templates"
+
+[build]
+assets = ["../static"]
+
+[html]
+toc = false

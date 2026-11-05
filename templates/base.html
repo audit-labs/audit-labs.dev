@@ -1,0 +1,66 @@
+{#- The layout for every page. Each page's body is an HTML export block; the keywords
+    below fill in the head, the nav button and the footer.
+
+      #+nav_label / #+nav_url   the nav button
+      #+tagline                 the footer copyright line, after "© 2026 Audit Labs — "
+      #+footer_note             optional small print under it (HTML)
+      #+footer_link_N           extra footer links, "Label | url", N from 1
+      #+stylesheet              optional page stylesheet in assets/
+      #+rel_me                  optional rel="me" identity link #}
+{%- set k = page.keywords -%}
+<!DOCTYPE html>
+<html lang="{{ site.language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ k.description }}">
+{%- if k.rel_me %}
+    <link rel="me" href="{{ k.rel_me }}">
+{%- endif %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ root }}assets/site.css">
+{%- if k.stylesheet %}
+    <link rel="stylesheet" href="{{ root }}assets/{{ k.stylesheet }}">
+{%- endif %}
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">AUDIT<span>LABS</span></a>
+        <ul class="nav-links">
+            <li><a href="{{ k.nav_url }}" class="btn-github">{{ k.nav_label }}</a></li>
+        </ul>
+    </div>
+</nav>
+{{ body | safe }}
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            <a href="/" class="footer-logo">AUDIT<span>LABS</span></a>
+            <p>© 2026 Audit Labs — {{ k.tagline }}</p>
+{%- if k.footer_note %}
+            <p class="footer-note">{{ k.footer_note | safe }}</p>
+{%- endif %}
+        </div>
+        <div class="footer-links">
+{%- if page.url != "index.html" %}
+            <a href="/">Home</a>
+{%- endif %}
+            <a href="https://gitbay.org/audit-labs">Source</a>
+{%- for n in range(1, 10) %}
+{%- set link = k["footer_link_" ~ n] %}
+{%- if link %}
+{%- set parts = link | split(" | ") | list %}
+            <a href="{{ parts[1] }}">{{ parts[0] }}</a>
+{%- endif %}
+{%- endfor %}
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
